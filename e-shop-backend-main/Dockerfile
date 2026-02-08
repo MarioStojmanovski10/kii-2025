@@ -1,11 +1,11 @@
+# Dockerfile во e-shop-backend-main
 FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-# Копирај го JAR-от што го креиравме
-COPY emt-2025-0.0.1-SNAPSHOT.jar app.jar
+# Копирај го JAR-от од target фолдерот
+COPY target/emt-2025-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
+ENTRYPOINT ["java","-jar","app.jar"]
