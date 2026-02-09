@@ -1,22 +1,26 @@
 # ---------- 1️⃣ BUILD STAGE ----------
-FROM eclipse-temurin:21-jdk AS build
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
-# Копирај сè што му треба на Maven
-COPY . .
+# Копирај pom.xml прво (за кеш)
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-# Изгради го jar-от (без тестови за CI)
+# Копирај го кодот
+COPY src ./src
+
+# Изгради JAR (без тестови)
 RUN mvn clean package -DskipTests
+
 
 # ---------- 2️⃣ RUNTIME STAGE ----------
 FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-# Копирај го jar-от од build stage
 COPY --from=build /app/target/emt-2025-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
